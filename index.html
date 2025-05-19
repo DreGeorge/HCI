@@ -9,7 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Barrio&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
-  <!-- Internal CSS -->
   <style>
     * {
       box-sizing: border-box;
@@ -158,6 +157,26 @@
       opacity: 1;
     }
 
+    .favorite-btn {
+      margin-top: 10px;
+      background-color: #ffa500;
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .favorite-btn:hover {
+      background-color: #cc8400;
+    }
+
+    .favorite-btn.favorited {
+      background-color: #4caf50;
+    }
+
     .tips-section {
       display: flex;
       justify-content: center;
@@ -178,21 +197,6 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-start;
-    }
-
-    .tip-frame h4 {
-      color: #d2691e;
-      font-size: 1.6em;
-      margin-bottom: 15px;
-    }
-
-    .tip-frame a {
-      color: #8B4513;
-      text-decoration: none;
-    }
-
-    .tip-frame a:hover {
-      text-decoration: underline;
     }
 
     hr {
@@ -245,14 +249,11 @@
 </head>
 
 <body>
-
-  <!-- Header -->
   <header>
     <h1>Sarap ng Lutong Bahay</h1>
     <p>Delicious, home-cooked meals made with love!</p>
   </header>
 
-  <!-- Navigation -->
   <nav id="navbar">
     <span class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></span>
     <ul>
@@ -272,7 +273,6 @@
     </ul>
   </nav>
 
-  <!-- Main Content -->
   <main>
     <h2>Welcome to Sarap ng Lutong Bahay!</h2>
     <p>Enjoy our warm, home-cooked meals made with fresh ingredients!</p>
@@ -287,6 +287,7 @@
         <p><strong>Price: ₱110</strong></p>
         <p>Classic pork adobo with savory soy-vinegar sauce.</p>
       </div>
+      <button class="favorite-btn" onclick="addToFavorites('Pork Adobo')">⭐ Add to Favorites</button>
     </div>
 
     <div class="image-template">
@@ -296,6 +297,7 @@
         <p><strong>Price: ₱135</strong></p>
         <p>Tamarind-based soup with tender pork and veggies.</p>
       </div>
+      <button class="favorite-btn" onclick="addToFavorites('Sinigang')">⭐ Add to Favorites</button>
     </div>
 
     <div class="image-template">
@@ -305,31 +307,14 @@
         <p><strong>Price: ₱140</strong></p>
         <p>Crispy fried pork belly served with liver sauce.</p>
       </div>
+      <button class="favorite-btn" onclick="addToFavorites('Lechon Kawali')">⭐ Add to Favorites</button>
     </div>
 
-    <!-- New Button Below Recipes -->
     <div style="text-align: center; margin-top: 30px;">
-      <a href="rice-meals.html" style="
-        display: inline-block;
-        font-family: 'Barrio', cursive;
-        font-size: 1.5em;
-        color: #fff;
-        background-color: #d2691e;
-        padding: 10px 25px;
-        border-radius: 8px;
-        text-decoration: none;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-        transition: background-color 0.3s ease;
-      " onmouseover="this.style.backgroundColor='#a0522d'" onmouseout="this.style.backgroundColor='#d2691e'">
-        TIGNAN LAHAT
-      </a>
+      <a href="rice-meals.html" style="display: inline-block; font-family: 'Barrio', cursive; font-size: 1.5em; color: #fff; background-color: #d2691e; padding: 10px 25px; border-radius: 8px; text-decoration: none; box-shadow: 0 4px 6px rgba(0,0,0,0.2);" onmouseover="this.style.backgroundColor='#a0522d'" onmouseout="this.style.backgroundColor='#d2691e'">TIGNAN LAHAT</a>
     </div>
 
     <hr />
-
-    <!-- Tips Section & Below content remain unchanged -->
-    <!-- ... (rest of the code continues unchanged) -->
-
 
     <section class="tips-section">
       <div class="tip-frame">
@@ -341,11 +326,9 @@
           <li>Clean as you go to make cooking more enjoyable.</li>
         </ul>
       </div>
-
       <div class="tip-frame" style="text-align: center; justify-content: center; align-items: center;">
         <h4 style="font-size: 1.8em;">Serving Lutong Bahay Since 1995</h4>
       </div>
-
       <div class="tip-frame">
         <h4>Loyalty Program & Rewards</h4>
         <p><strong>Suki Card – Eat 5 Times, Get 1 Ulam Free!</strong></p>
@@ -386,6 +369,17 @@
   <script>
     function toggleMenu() {
       document.getElementById("navbar").classList.toggle("active");
+    }
+
+    function addToFavorites(itemName) {
+      let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+      if (!favorites.includes(itemName)) {
+        favorites.push(itemName);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        alert(itemName + ' added to favorites!');
+      } else {
+        alert(itemName + ' is already in your favorites!');
+      }
     }
   </script>
 </body>

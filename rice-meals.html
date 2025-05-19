@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Rice Meals | Sarap ng Lutong Bahay</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barrio&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fff3e6;
+      color: #4a2e13;
+    }
+    header {
+      background-color: #d9b382; /* Changed from #fae3c2 to a deeper warm brown */
+      padding: 20px;
+      text-align: center;
+    }
+    header h1 {
+      font-family: 'Barrio', cursive;
+      font-size: 3em;
+      margin: 0;
+      letter-spacing: 2px;
+      color: #fff8ef;
+      text-shadow: 1px 1px 2px #4a2e13cc;
+    }
+    nav {
+      background-color: #fbd8aa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      position: relative;
+    }
+    .nav-left a {
+      text-decoration: none;
+      color: #fff8ef;
+      font-weight: 700;
+      background-color: #4a2e13;
+      padding: 10px 16px;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+      display: inline-block;
+    }
+    .nav-left a:hover {
+      background-color: #3c2410;
+    }
+    .nav-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #4a2e13;
+      gap: 20px;
+    }
+    .nav-center span {
+      font-size: 1.4em;
+    }
+    .nav-center a {
+      text-decoration: none;
+      color: #4a2e13;
+      font-size: 1.6em;
+      transition: color 0.3s;
+    }
+    .nav-center a:hover {
+      color: #e17b1c;
+    }
+    .search-container {
+      text-align: center;
+      margin: 20px 0 30px 0;
+    }
+    #search {
+      width: 300px;
+      max-width: 90%;
+      padding: 10px 15px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 2px solid #f4a942;
+      outline-color: #f4a942;
+    }
+    .menu-section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 20px 50px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+    .dish-card {
+      background-color: #fff8ef;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(90, 62, 27, 0.25);
+      overflow: hidden;
+      width: 280px;
+      display: none;
+      flex-direction: column;
+      transition: transform 0.2s;
+    }
+    .dish-card:hover {
+      transform: translateY(-4px);
+    }
+    .dish-card.active {
+      display: flex;
+    }
+    .dish-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .dish-info {
+      padding: 15px 18px;
+      display: flex;
+      flex-direction: column;
+    }
+    .dish-info h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.3em;
+    }
+    .dish-info p {
+      font-size: 0.95em;
+      flex-grow: 1;
+    }
+    .dish-info strong {
+      font-size: 1.1em;
+    }
+    .add-to-cart {
+      margin-top: 10px;
+      background-color: #fbd8aa;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .add-to-cart:hover {
+      background-color: #f4a942;
+    }
+    .navigation-buttons {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .navigation-buttons button {
+      background-color: #fbd8aa;
+      border: none;
+      padding: 12px 24px;
+      margin: 0 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .navigation-buttons button:disabled {
+      opacity: 0.5;
+    }
+    .cart-float-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #f4a942;
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: 50px;
+      font-weight: bold;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: background-color 0.3s;
+    }
+    .cart-float-btn:hover {
+      background-color: #e6922e;
+    }
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #4a2e13;
+      color: #fff3e6;
+      text-align: center;
+      border-radius: 8px;
+      padding: 16px;
+      position: fixed;
+      z-index: 100;
+      left: 50%;
+      bottom: 30px;
+      font-size: 1rem;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out, bottom 0.5s;
+    }
+    #toast.show {
+      visibility: visible;
+      opacity: 1;
+      bottom: 50px;
+    }
+    @media (max-width: 768px) {
+      .menu-section {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+      }
+      .dish-card {
+        min-width: 280px;
+      }
+      .cart-float-btn {
+        padding: 12px 18px;
+        font-size: 0.95em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sarap ng Lutong Bahay</h1>
+  </header>
+
+  <nav>
+    <div class="nav-left">
+      <a href="index.html">Back to Homepage</a>
+    </div>
+    <div class="nav-center">
+      <a href="drinks.html" title="Previous"><i class="fas fa-chevron-left"></i></a>
+      <span>Rice Meals</span>
+      <a href="gulay.html" title="Next"><i class="fas fa-chevron-right"></i></a>
+    </div>
+  </nav>
+
+  <div class="search-container">
+    <input id="search" type="text" placeholder="Search dishes..." />
+  </div>
+
+  <section class="menu-section">
+    <!-- Sample dish cards (repeatable structure) -->
+    <article class="dish-card">
+      <img src="https://images.squarespace-cdn.com/content/v1/5a81c36ea803bb1dd7807778/1594846820039-AO7F8150VQUY1O1VPGT7/Tapsilog" class="dish-image" alt="Tapsilog" />
+      <div class="dish-info">
+        <h3>Tapsilog</h3>
+        <p>Marinated beef tapa with garlic rice and sunny-side up egg.</p>
+        <strong>₱120</strong>
+        <button class="add-to-cart">Add to Cart</button>
+      </div>
+    </article>
+    
+   <article class="dish-card">
+  <img src="https://www.seriouseats.com/thmb/An34r_jzWgDqNglX2fA-MlylivE=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__serious_eats__seriouseats.com__2019__10__20191023-chicken-adobo-vicky-wasik-21-d505a30b74f04709b316efa225e5ea94.jpg" alt="Adobo Rice" class="dish-image" />
+  <div class="dish-info">
+    <h3>Adobo Rice</h3>
+    <p>Classic chicken adobo served over flavorful rice.</p>
+    <strong>₱110</strong>
+    <button class="add-to-cart" data-name="Adobo Rice" data-price="110">Add to Cart</button>
+  </div>
+</article>
+    
+    <article class="dish-card">
+  <img src="https://i0.wp.com/ricelifefoodie.com/wp-content/uploads/2023/12/skin-crispy-pork-belly-from-oven-served-with-rice.jpg?resize=1024%2C900&ssl=1" alt="Lechon Kawali" class="dish-image" />
+  <div class="dish-info">
+    <h3>Lechon Kawali</h3>
+    <p>Crispy deep-fried pork belly with steamed rice.</p>
+    <strong>₱140</strong>
+    <button class="add-to-cart" data-name="Lechon Kawali" data-price="140">Add to Cart</button>
+  </div>
+</article>
+
+    <article class="dish-card">
+  <img src="https://www.kawalingpinoy.com/wp-content/uploads/2018/12/sisig-3.jpg" alt="Sisig Rice" class="dish-image" />
+  <div class="dish-info">
+    <h3>Sisig Rice</h3>
+    <p>Spicy pork sisig served on top of garlic rice.</p>
+    <strong>₱130</strong>
+    <button class="add-to-cart" data-name="Sisig Rice" data-price="130">Add to Cart</button>
+  </div>
+</article>
+
+    <article class="dish-card">
+  <img src="https://www.allrecipes.com/thmb/lX85_4szb2rDeKpCAg_pkFv7i_o=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/15431-BeefandVegetableStew-DDMFS-046-4x3-b3fda948241d4087b68955e080e882ac.jpg" alt="Kaldereta" class="dish-image" />
+  <div class="dish-info">
+    <h3>Kaldereta</h3>
+    <p>Hearty beef stew cooked in tomato sauce with vegetables.</p>
+    <strong>₱150</strong>
+    <button class="add-to-cart" data-name="Kaldereta" data-price="150">Add to Cart</button>
+  </div>
+</article>
+
+    <article class="dish-card">
+  <img src="https://foodthinkers.com.ph/wp-content/uploads/2022/01/P011822090725_1.jpg" alt="Mechado" class="dish-image" />
+  <div class="dish-info">
+    <h3>Mechado</h3>
+    <p>Slow-cooked beef mechado with potatoes and carrots.</p>
+    <strong>₱145</strong>
+    <button class="add-to-cart" data-name="Mechado" data-price="145">Add to Cart</button>
+  </div>
+</article>
+
+    <article class="dish-card">
+  <img src="https://assets.unileversolutions.com/recipes-v2/214409.png" alt="Menudo" class="dish-image" />
+  <div class="dish-info">
+    <h3>Menudo</h3>
+    <p>Pork stew with liver, potatoes, and tomato sauce.</p>
+    <strong>₱125</strong>
+    <button class="add-to-cart" data-name="Menudo" data-price="125">Add to Cart</button>
+  </div>
+</article>
+
+    <article class="dish-card">
+  <img src="https://www.maggi.ph/sites/default/files/srh_recipes/442ce059c4c490e1ab61cdaef9c98511.jpg" alt="Sinigang" class="dish-image" />
+  <div class="dish-info">
+    <h3>Sinigang</h3>
+    <p>Tamarind-based sour soup with pork and vegetables.</p>
+    <strong>₱135</strong>
+    <button class="add-to-cart" data-name="Sinigang" data-price="135">Add to Cart</button>
+  </div>
+</article>
+
+    <article class="dish-card">
+  <img src="https://kusinasecrets.com/wp-content/uploads/2024/11/u3317447599_httpss.mj_.runhLZBLJDoKxI_Filipino-style_paella_in_b37fdadf-74c9-4f01-8ee3-8b03fa19c73d_3.jpg" alt="Paella" class="dish-image" />
+  <div class="dish-info">
+    <h3>Paella</h3>
+    <p>Filipino-style paella with mixed seafood and rice.</p>
+    <strong>₱160</strong>
+    <button class="add-to-cart" data-name="Paella" data-price="160">Add to Cart</button>
+  </div>
+</article>
+
+
+  </section>
+
+
+  <div class="navigation-buttons">
+    <button id="prevBtn" disabled>← Previous</button>
+    <button id="nextBtn">Next →</button>
+  </div>
+
+  <a href="cart.html" class="cart-float-btn">🛒 View Cart</a>
+
+  <div id="toast">Item added to cart!</div>
+
+  <script>
+    const dishes = Array.from(document.querySelectorAll('.dish-card'));
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const searchInput = document.getElementById('search');
+    const toast = document.getElementById('toast');
+
+    const itemsPerPage = 3;
+    let currentPage = 0;
+    let filteredDishes = dishes.slice();
+
+    function updateDisplay() {
+      dishes.forEach(dish => {
+        dish.classList.remove('active');
+        dish.style.display = 'none';
+      });
+
+      const start = currentPage * itemsPerPage;
+      const end = start + itemsPerPage;
+
+      filteredDishes.forEach((dish, index) => {
+        if (index >= start && index < end) {
+          dish.classList.add('active');
+          dish.style.display = 'flex';
+        }
+      });
+
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = end >= filteredDishes.length;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 0) {
+        currentPage--;
+        updateDisplay();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if ((currentPage + 1) * itemsPerPage < filteredDishes.length) {
+        currentPage++;
+        updateDisplay();
+      }
+    });
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase().trim();
+      currentPage = 0;
+      filteredDishes = !query
+        ? dishes.slice()
+        : dishes.filter(dish => {
+            const title = dish.querySelector('h3').textContent.toLowerCase();
+            const desc = dish.querySelector('p').textContent.toLowerCase();
+            return title.includes(query) || desc.includes(query);
+          });
+      updateDisplay();
+    });
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.className = "show";
+      setTimeout(() => {
+        toast.className = toast.className.replace("show", "");
+      }, 3000);
+    }
+
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const dishCard = e.target.closest('.dish-card');
+        const name = dishCard.querySelector('h3').textContent;
+        const priceText = dishCard.querySelector('strong').textContent;
+        const price = parseFloat(priceText.replace(/[₱,]/g, ''));
+        const img = dishCard.querySelector('img').src;
+
+        const item = { name, price, img, quantity: 1 };
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        const existing = cart.find(i => i.name === item.name);
+        if (existing) {
+          existing.quantity += 1;
+        } else {
+          cart.push(item);
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        showToast(`${name} added to cart!`);
+      });
+    });
+
+    updateDisplay();
+  </script>
+</body>
+</html>

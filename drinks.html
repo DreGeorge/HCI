@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Drinks | Sarap ng Lutong Bahay</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barrio&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fff3e6;
+      color: #4a2e13;
+    }
+    header {
+      background-color: #d9b382; /* Changed from #fae3c2 to a deeper warm brown */
+      padding: 20px;
+      text-align: center;
+    }
+    header h1 {
+      font-family: 'Barrio', cursive;
+      font-size: 3em;
+      margin: 0;
+      letter-spacing: 2px;
+      color: #fff8ef;
+      text-shadow: 1px 1px 2px #4a2e13cc;
+    }
+    nav {
+      background-color: #fbd8aa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      position: relative;
+    }
+    .nav-left a {
+      text-decoration: none;
+      color: #fff8ef;
+      font-weight: 700;
+      background-color: #4a2e13;
+      padding: 10px 16px;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+      display: inline-block;
+    }
+    .nav-left a:hover {
+      background-color: #3c2410;
+    }
+    .nav-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #4a2e13;
+      gap: 20px;
+    }
+    .nav-center span {
+      font-size: 1.4em;
+    }
+    .nav-center a {
+      text-decoration: none;
+      color: #4a2e13;
+      font-size: 1.6em;
+      transition: color 0.3s;
+    }
+    .nav-center a:hover {
+      color: #e17b1c;
+    }
+    .search-container {
+      text-align: center;
+      margin: 20px 0 30px 0;
+    }
+    #search {
+      width: 300px;
+      max-width: 90%;
+      padding: 10px 15px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 2px solid #f4a942;
+      outline-color: #f4a942;
+    }
+    .menu-section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 20px 50px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+    .dish-card {
+      background-color: #fff8ef;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(90, 62, 27, 0.25);
+      overflow: hidden;
+      width: 280px;
+      display: none;
+      flex-direction: column;
+      transition: transform 0.2s;
+    }
+    .dish-card:hover {
+      transform: translateY(-4px);
+    }
+    .dish-card.active {
+      display: flex;
+    }
+    .dish-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .dish-info {
+      padding: 15px 18px;
+      display: flex;
+      flex-direction: column;
+    }
+    .dish-info h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.3em;
+    }
+    .dish-info p {
+      font-size: 0.95em;
+      flex-grow: 1;
+    }
+    .dish-info strong {
+      font-size: 1.1em;
+    }
+    .add-to-cart {
+      margin-top: 10px;
+      background-color: #fbd8aa;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .add-to-cart:hover {
+      background-color: #f4a942;
+    }
+    .navigation-buttons {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .navigation-buttons button {
+      background-color: #fbd8aa;
+      border: none;
+      padding: 12px 24px;
+      margin: 0 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .navigation-buttons button:disabled {
+      opacity: 0.5;
+    }
+    .cart-float-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #f4a942;
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: 50px;
+      font-weight: bold;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: background-color 0.3s;
+    }
+    .cart-float-btn:hover {
+      background-color: #e6922e;
+    }
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #4a2e13;
+      color: #fff3e6;
+      text-align: center;
+      border-radius: 8px;
+      padding: 16px;
+      position: fixed;
+      z-index: 100;
+      left: 50%;
+      bottom: 30px;
+      font-size: 1rem;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out, bottom 0.5s;
+    }
+    #toast.show {
+      visibility: visible;
+      opacity: 1;
+      bottom: 50px;
+    }
+    @media (max-width: 768px) {
+      .menu-section {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+      }
+      .dish-card {
+        min-width: 280px;
+      }
+      .cart-float-btn {
+        padding: 12px 18px;
+        font-size: 0.95em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sarap ng Lutong Bahay</h1>
+  </header>
+
+  <nav>
+    <div class="nav-left">
+      <a href="index.html">Back to Homepage</a>
+    </div>
+    <div class="nav-center">
+      <a href="desserts.html" title="Previous"><i class="fas fa-chevron-left"></i></a>
+      <span>Drinks</span>
+      <a href="rice-meals.html" title="Next"><i class="fas fa-chevron-right"></i></a>
+    </div>
+  </nav>
+
+  <div class="search-container">
+    <input id="search" type="text" placeholder="Search dishes..." />
+  </div>
+
+ <section class="menu-section">
+    <!-- Sample dish cards (repeatable structure) -->
+  <article class="dish-card">
+  <img src="https://bakingmehungry.com/wp-content/uploads/2024/05/lipton-iced-tea-recipe-8.jpg" alt="Iced Tea" class="dish-image" />
+  <div class="dish-info">
+    <h3>Iced Tea</h3>
+    <p>Chilled house-blend iced tea with a refreshing twist.</p>
+    <strong>₱30</strong>
+    <button class="add-to-cart" data-name="Iced Tea" data-price="30">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://thegridfoodmarket.com/cdn/shop/products/Sago_tGulaman_700x700.jpg?v=1629990481" alt="Sago't Gulaman" class="dish-image" />
+  <div class="dish-info">
+    <h3>Sago't Gulaman</h3>
+    <p>Sweetened sago pearls and gulaman in syrup.</p>
+    <strong>₱35</strong>
+    <button class="add-to-cart" data-name="Sago't Gulaman" data-price="35">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://i.pinimg.com/736x/f5/7b/9c/f57b9c002ba6c57f8267b5f747efabfd.jpg" alt="Buko Juice" class="dish-image" />
+  <div class="dish-info">
+    <h3>Buko Juice</h3>
+    <p>Fresh coconut water with strips of buko.</p>
+    <strong>₱40</strong>
+    <button class="add-to-cart" data-name="Buko Juice" data-price="40">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://hungryinthailand.com/wp-content/uploads/2024/03/thai-mango-shake.webp" alt="Mango Shake" class="dish-image" />
+  <div class="dish-info">
+    <h3>Mango Shake</h3>
+    <p>Cool and creamy ripe mango shake.</p>
+    <strong>₱50</strong>
+    <button class="add-to-cart" data-name="Mango Shake" data-price="50">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://www.kawalingpinoy.com/wp-content/uploads/2013/05/calamansi-juice.jpg" alt="Calamansi Juice" class="dish-image" />
+  <div class="dish-info">
+    <h3>Calamansi Juice</h3>
+    <p>Classic Filipino citrus juice, chilled.</p>
+    <strong>₱30</strong>
+    <button class="add-to-cart" data-name="Calamansi Juice" data-price="30">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://cdn.tatlerasia.com/asiatatler/i/ph/2020/02/14122338-46936674-136821003975236-4270794542242246534-n_cover_1080x1080.jpg" alt="Milk Tea" class="dish-image" />
+  <div class="dish-info">
+    <h3>Milk Tea</h3>
+    <p>Popular milk tea with chewy pearls.</p>
+    <strong>₱60</strong>
+    <button class="add-to-cart" data-name="Milk Tea" data-price="60">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://juankakanin.wordpress.com/wp-content/uploads/2014/10/thepinoywarrior-kapeng-barako.jpg" alt="Barako Coffee" class="dish-image" />
+  <div class="dish-info">
+    <h3>Barako Coffee</h3>
+    <p>Strong Batangas-style brewed coffee.</p>
+    <strong>₱25</strong>
+    <button class="add-to-cart" data-name="Barako Coffee" data-price="25">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://www.seriouseats.com/thmb/H75lwy7gs7L-L4PbCBtON5xAWe4=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/__opt__aboutcom__coeus__resources__content_migration__serious_eats__seriouseats.com__2020__09__20200901-filipino-cantaloupe-juice-vicky-wasik-5-85bafbe5082846588155dd8ac0c91354.jpg" alt="Melon Juice" class="dish-image" />
+  <div class="dish-info">
+    <h3>Melon Juice</h3>
+    <p>Cold and sweet cantaloupe juice with bits.</p>
+    <strong>₱35</strong>
+    <button class="add-to-cart" data-name="Melon Juice" data-price="35">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://knoops.com/cdn/shop/files/iced_choc.jpg?v=1649844303&width=1800" alt="Choco Drink" class="dish-image" />
+  <div class="dish-info">
+    <h3>Choco Drink</h3>
+    <p>Refreshing iced chocolate, smooth and chocolaty.</p>
+    <strong>₱45</strong>
+    <button class="add-to-cart" data-name="Choco Drink" data-price="45">Add to Cart</button>
+  </div>
+</article>
+
+
+
+
+
+
+  </section>
+
+
+  <div class="navigation-buttons">
+    <button id="prevBtn" disabled>← Previous</button>
+    <button id="nextBtn">Next →</button>
+  </div>
+
+  <a href="cart.html" class="cart-float-btn">🛒 View Cart</a>
+
+  <div id="toast">Item added to cart!</div>
+
+  <script>
+    const dishes = Array.from(document.querySelectorAll('.dish-card'));
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const searchInput = document.getElementById('search');
+    const toast = document.getElementById('toast');
+
+    const itemsPerPage = 3;
+    let currentPage = 0;
+    let filteredDishes = dishes.slice();
+
+    function updateDisplay() {
+      dishes.forEach(dish => {
+        dish.classList.remove('active');
+        dish.style.display = 'none';
+      });
+
+      const start = currentPage * itemsPerPage;
+      const end = start + itemsPerPage;
+
+      filteredDishes.forEach((dish, index) => {
+        if (index >= start && index < end) {
+          dish.classList.add('active');
+          dish.style.display = 'flex';
+        }
+      });
+
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = end >= filteredDishes.length;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 0) {
+        currentPage--;
+        updateDisplay();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if ((currentPage + 1) * itemsPerPage < filteredDishes.length) {
+        currentPage++;
+        updateDisplay();
+      }
+    });
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase().trim();
+      currentPage = 0;
+      filteredDishes = !query
+        ? dishes.slice()
+        : dishes.filter(dish => {
+            const title = dish.querySelector('h3').textContent.toLowerCase();
+            const desc = dish.querySelector('p').textContent.toLowerCase();
+            return title.includes(query) || desc.includes(query);
+          });
+      updateDisplay();
+    });
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.className = "show";
+      setTimeout(() => {
+        toast.className = toast.className.replace("show", "");
+      }, 3000);
+    }
+
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const dishCard = e.target.closest('.dish-card');
+        const name = dishCard.querySelector('h3').textContent;
+        const priceText = dishCard.querySelector('strong').textContent;
+        const price = parseFloat(priceText.replace(/[₱,]/g, ''));
+        const img = dishCard.querySelector('img').src;
+
+        const item = { name, price, img, quantity: 1 };
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        const existing = cart.find(i => i.name === item.name);
+        if (existing) {
+          existing.quantity += 1;
+        } else {
+          cart.push(item);
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        showToast(`${name} added to cart!`);
+      });
+    });
+
+    updateDisplay();
+  </script>
+</body>
+</html>

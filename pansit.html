@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pansit | Sarap ng Lutong Bahay</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barrio&display=swap" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fff3e6;
+      color: #4a2e13;
+    }
+    header {
+      background-color: #d9b382; /* Changed from #fae3c2 to a deeper warm brown */
+      padding: 20px;
+      text-align: center;
+    }
+    header h1 {
+      font-family: 'Barrio', cursive;
+      font-size: 3em;
+      margin: 0;
+      letter-spacing: 2px;
+      color: #fff8ef;
+      text-shadow: 1px 1px 2px #4a2e13cc;
+    }
+    nav {
+      background-color: #fbd8aa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 20px;
+      position: relative;
+    }
+    .nav-left a {
+      text-decoration: none;
+      color: #fff8ef;
+      font-weight: 700;
+      background-color: #4a2e13;
+      padding: 10px 16px;
+      border-radius: 6px;
+      transition: background-color 0.3s ease;
+      display: inline-block;
+    }
+    .nav-left a:hover {
+      background-color: #3c2410;
+    }
+    .nav-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #4a2e13;
+      gap: 20px;
+    }
+    .nav-center span {
+      font-size: 1.4em;
+    }
+    .nav-center a {
+      text-decoration: none;
+      color: #4a2e13;
+      font-size: 1.6em;
+      transition: color 0.3s;
+    }
+    .nav-center a:hover {
+      color: #e17b1c;
+    }
+    .search-container {
+      text-align: center;
+      margin: 20px 0 30px 0;
+    }
+    #search {
+      width: 300px;
+      max-width: 90%;
+      padding: 10px 15px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 2px solid #f4a942;
+      outline-color: #f4a942;
+    }
+    .menu-section {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 20px 50px;
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+    }
+    .dish-card {
+      background-color: #fff8ef;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(90, 62, 27, 0.25);
+      overflow: hidden;
+      width: 280px;
+      display: none;
+      flex-direction: column;
+      transition: transform 0.2s;
+    }
+    .dish-card:hover {
+      transform: translateY(-4px);
+    }
+    .dish-card.active {
+      display: flex;
+    }
+    .dish-image {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+    }
+    .dish-info {
+      padding: 15px 18px;
+      display: flex;
+      flex-direction: column;
+    }
+    .dish-info h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.3em;
+    }
+    .dish-info p {
+      font-size: 0.95em;
+      flex-grow: 1;
+    }
+    .dish-info strong {
+      font-size: 1.1em;
+    }
+    .add-to-cart {
+      margin-top: 10px;
+      background-color: #fbd8aa;
+      border: none;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .add-to-cart:hover {
+      background-color: #f4a942;
+    }
+    .navigation-buttons {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    .navigation-buttons button {
+      background-color: #fbd8aa;
+      border: none;
+      padding: 12px 24px;
+      margin: 0 12px;
+      font-weight: 700;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .navigation-buttons button:disabled {
+      opacity: 0.5;
+    }
+    .cart-float-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #f4a942;
+      color: #fff;
+      padding: 14px 22px;
+      border-radius: 50px;
+      font-weight: bold;
+      text-decoration: none;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      transition: background-color 0.3s;
+    }
+    .cart-float-btn:hover {
+      background-color: #e6922e;
+    }
+    #toast {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #4a2e13;
+      color: #fff3e6;
+      text-align: center;
+      border-radius: 8px;
+      padding: 16px;
+      position: fixed;
+      z-index: 100;
+      left: 50%;
+      bottom: 30px;
+      font-size: 1rem;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out, bottom 0.5s;
+    }
+    #toast.show {
+      visibility: visible;
+      opacity: 1;
+      bottom: 50px;
+    }
+    @media (max-width: 768px) {
+      .menu-section {
+        overflow-x: auto;
+        flex-wrap: nowrap;
+      }
+      .dish-card {
+        min-width: 280px;
+      }
+      .cart-float-btn {
+        padding: 12px 18px;
+        font-size: 0.95em;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Sarap ng Lutong Bahay</h1>
+  </header>
+
+  <nav>
+    <div class="nav-left">
+      <a href="index.html">Back to Homepage</a>
+    </div>
+    <div class="nav-center">
+      <a href="gulay.html" title="Previous"><i class="fas fa-chevron-left"></i></a>
+      <span>Pansit</span>
+      <a href="desserts.html" title="Next"><i class="fas fa-chevron-right"></i></a>
+    </div>
+  </nav>
+
+  <div class="search-container">
+    <input id="search" type="text" placeholder="Search dishes..." />
+  </div>
+
+  <section class="menu-section">
+    <!-- Sample dish cards (repeatable structure) -->
+   <article class="dish-card">
+  <img src="https://khinskitchen.com/wp-content/uploads/2022/06/pancit-bihon-10.jpg" alt="Pansit Bihon" class="dish-image" />
+  <div class="dish-info">
+    <h3>Pansit Bihon</h3>
+    <p>Classic thin rice noodles with pork, shrimp, and vegetables.</p>
+    <strong>₱110</strong>
+    <button class="add-to-cart" data-name="Pansit Bihon" data-price="110">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://www.maggi.ph/sites/default/files/styles/home_stage_944_531/public/srh_recipes/5b661360b8e49f5c2348c06858bb8f57.jpg?h=4f5b30f1&itok=doXJkNdF" alt="Pansit Canton" class="dish-image" />
+  <div class="dish-info">
+    <h3>Pansit Canton</h3>
+    <p>Stir-fried egg noodles with savory meat and veggie mix.</p>
+    <strong>₱115</strong>
+    <button class="add-to-cart" data-name="Pansit Canton" data-price="115">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://theodehlicious.com/wp-content/uploads/2023/02/Pancit-Bam-I-Recipe.jpg" alt="Bam-I" class="dish-image" />
+  <div class="dish-info">
+    <h3>Bam-I</h3>
+    <p>Cebuano-style mixed noodles — bihon and canton combined.</p>
+    <strong>₱120</strong>
+    <button class="add-to-cart" data-name="Bam-I" data-price="120">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://panlasangpinoy.com/wp-content/uploads/2009/09/Pancit-Palabok-jpg.webp" alt="Palabok" class="dish-image" />
+  <div class="dish-info">
+    <h3>Palabok</h3>
+    <p>Orange sauced rice noodles with tinapa flakes and egg.</p>
+    <strong>₱125</strong>
+    <button class="add-to-cart" data-name="Palabok" data-price="125">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://assets.unileversolutions.com/v1/94455057.jpg" alt="Lomi" class="dish-image" />
+  <div class="dish-info">
+    <h3>Lomi</h3>
+    <p>Thick egg noodles in rich broth with pork and liver slices.</p>
+    <strong>₱130</strong>
+    <button class="add-to-cart" data-name="Lomi" data-price="130">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://www.kawalingpinoy.com/wp-content/uploads/2015/05/pancit-sotanghon-guisado-5.jpg" alt="Sotanghon Guisado" class="dish-image" />
+  <div class="dish-info">
+    <h3>Sotanghon Guisado</h3>
+    <p>Glass noodles sautéed with vegetables and chicken strips.</p>
+    <strong>₱105</strong>
+    <button class="add-to-cart" data-name="Sotanghon Guisado" data-price="105">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://images.yummy.ph/yummy/uploads/2019/06/how-to-eat-pancit-habhab-004-1.jpg" alt="Pansit Habhab" class="dish-image" />
+  <div class="dish-info">
+    <h3>Pansit Habhab</h3>
+    <p>Lucban-style noodles eaten from banana leaves with vinegar.</p>
+    <strong>₱115</strong>
+    <button class="add-to-cart" data-name="Pansit Habhab" data-price="115">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://feastfulfork.com/wp-content/uploads/2017/10/Pancit-Malabon-Feastful-Fork.jpg" alt="Pansit Malabon" class="dish-image" />
+  <div class="dish-info">
+    <h3>Pansit Malabon</h3>
+    <p>Thick rice noodles with seafood, eggs, and bright orange sauce.</p>
+    <strong>₱130</strong>
+    <button class="add-to-cart" data-name="Pansit Malabon" data-price="130">Add to Cart</button>
+  </div>
+</article>
+<article class="dish-card">
+  <img src="https://images.yummy.ph/yummy/uploads/2015/11/pancit-luglog-645-1.jpg" alt="Pansit Luglug" class="dish-image" />
+  <div class="dish-info">
+    <h3>Pansit Luglug</h3>
+    <p>Kapampangan palabok with thick noodles and shrimp toppings.</p>
+    <strong>₱125</strong>
+    <button class="add-to-cart" data-name="Pansit Luglug" data-price="125">Add to Cart</button>
+  </div>
+</article>
+
+
+
+
+  </section>
+
+  <div class="navigation-buttons">
+    <button id="prevBtn" disabled>← Previous</button>
+    <button id="nextBtn">Next →</button>
+  </div>
+
+  <a href="cart.html" class="cart-float-btn">🛒 View Cart</a>
+
+  <div id="toast">Item added to cart!</div>
+
+  <script>
+    const dishes = Array.from(document.querySelectorAll('.dish-card'));
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const searchInput = document.getElementById('search');
+    const toast = document.getElementById('toast');
+
+    const itemsPerPage = 3;
+    let currentPage = 0;
+    let filteredDishes = dishes.slice();
+
+    function updateDisplay() {
+      dishes.forEach(dish => {
+        dish.classList.remove('active');
+        dish.style.display = 'none';
+      });
+
+      const start = currentPage * itemsPerPage;
+      const end = start + itemsPerPage;
+
+      filteredDishes.forEach((dish, index) => {
+        if (index >= start && index < end) {
+          dish.classList.add('active');
+          dish.style.display = 'flex';
+        }
+      });
+
+      prevBtn.disabled = currentPage === 0;
+      nextBtn.disabled = end >= filteredDishes.length;
+    }
+
+    prevBtn.addEventListener('click', () => {
+      if (currentPage > 0) {
+        currentPage--;
+        updateDisplay();
+      }
+    });
+
+    nextBtn.addEventListener('click', () => {
+      if ((currentPage + 1) * itemsPerPage < filteredDishes.length) {
+        currentPage++;
+        updateDisplay();
+      }
+    });
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase().trim();
+      currentPage = 0;
+      filteredDishes = !query
+        ? dishes.slice()
+        : dishes.filter(dish => {
+            const title = dish.querySelector('h3').textContent.toLowerCase();
+            const desc = dish.querySelector('p').textContent.toLowerCase();
+            return title.includes(query) || desc.includes(query);
+          });
+      updateDisplay();
+    });
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.className = "show";
+      setTimeout(() => {
+        toast.className = toast.className.replace("show", "");
+      }, 3000);
+    }
+
+    document.querySelectorAll('.add-to-cart').forEach(button => {
+      button.addEventListener('click', (e) => {
+        const dishCard = e.target.closest('.dish-card');
+        const name = dishCard.querySelector('h3').textContent;
+        const priceText = dishCard.querySelector('strong').textContent;
+        const price = parseFloat(priceText.replace(/[₱,]/g, ''));
+        const img = dishCard.querySelector('img').src;
+
+        const item = { name, price, img, quantity: 1 };
+
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+        const existing = cart.find(i => i.name === item.name);
+        if (existing) {
+          existing.quantity += 1;
+        } else {
+          cart.push(item);
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        showToast(`${name} added to cart!`);
+      });
+    });
+
+    updateDisplay();
+  </script>
+</body>
+</html>
